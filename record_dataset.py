@@ -3,6 +3,7 @@
 from random import randint
 from random import seed
 from read_serial import read_serial
+import pickle
 import os
 
 PORT = 'COM6'
@@ -21,8 +22,8 @@ def read_dataset():
     
     if not os.path.isfile(dataset_filename):
         print('{} not found'.format(dataset_filename))
-        with open(dataset_filename, 'wb+') as f:
-            pickle.dump(f,{})
+        with open(dataset_filename, 'wb') as f:
+            pickle.dump({'samples':[],'labels':[]},f)
             
     with open(dataset_filename,'rb') as f:
         try:
@@ -48,7 +49,7 @@ def record_data():
     perform feature extraction
     pickle the data
     '''
-
+    # initialize communication
     read.init_comms()
 
     digits_data = read_dataset()
@@ -57,17 +58,19 @@ def record_data():
     labels = digits_data['labels']
     
     random_integer = generate_randint()
-    try:
-        for i in range(num_samples):
+    for _ in range(num_samples):
+        try:
             integer = next(random_integer)
-            print('Write {}'.format(integer))
-            
+            print('Write {}'.format(integer))            
             samples.append(read.read_data())
             labels.append(integer)
-    except KeyboardInterrupt:
-        print('Keyboard Interrupt')
-    finally:
-        read.close_comms()
+        except KeyboardInterrupt:
+            print('Keyboard Interrupt')
+            read.close_comms()
+            break
+
+    # done reading, close comms
+    read.close_comms()
 
         
     digits_data['labels'] = labels

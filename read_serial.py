@@ -8,9 +8,6 @@ import ast
 import signal
 import atexit
 
-PORT = 'COM6'
-BAUDRATE = 115200
-
 '''
 Class that handles comms with smart pen
 '''
@@ -18,7 +15,7 @@ class read_serial:
     def __init__(self, port_name, baudrate):
             self.port_name = port_name
             self.baudrate = baudrate
-            print('Ready to rock and roll!')
+            print('Intialized communication!')
             
     def init_comms(self): 
         self.ser = serial.Serial(self.port_name)
@@ -29,24 +26,24 @@ class read_serial:
         data = []
         # begin reading data from pen
         while True: 
-            try:
-                line = self.ser.readline()[:-2] # Strip Line feed and carriage return
-                line = line.decode("utf-8") # Decode UTF-8 Bytes
+            line = self.ser.readline()[:-2] # Strip Line feed and carriage return
+            line = line.decode("utf-8") # Decode UTF-8 Bytes
 
-                if (line == '{'):
-                    self.receive_data = True
+            if (line == '{'):
+                self.receive_data = True
                     
-                elif (line == '}'):
-                    #self.print_data(data)
-                    self.receive_data = False
-                    #self.close_comms()
-                    return data
-        
-                elif (self.receive_data):
-                    try:
-                        data.append(ast.literal_eval(line))
-                    except SyntaxError:
-                        pass
+            elif (line == '}'):
+                #self.print_data(data)
+                self.receive_data = False
+                #self.close_comms()
+                return data
+
+            elif (self.receive_data):
+                try:
+                    data.append(ast.literal_eval(line))
+                except SyntaxError:
+                    pass
+    
                                     
     def print_data(self,data):
             print('Sample Received: \n')
@@ -56,16 +53,25 @@ class read_serial:
     def close_comms(self):
             print('Closed Serial Port')
             self.ser.close()
-			
-			# example code: 
-read = read_serial(PORT,BAUDRATE) # set up serial communication with pen 
-read.init_comms() # initialize comms
 
-# begin collecting data until KeyboardInterrupt
-while True: 
-    try: 
-        data = read.read_data()
-        print('recorded data: \n', data)
-    except KeyboardInterrupt: 
-        read.close_comms()
-        break
+# example code:
+def main():
+    pass
+
+if __name__ == '__main__':
+    main()			
+    
+    PORT = 'COM6'
+    BAUDRATE = 115200
+    
+    read = read_serial(PORT,BAUDRATE) # set up serial communication with pen 
+    read.init_comms() # initialize comms
+
+    # begin collecting data until KeyboardInterrupt
+    while True: 
+        try: 
+            data = read.read_data()
+            print('recorded data: \n', data)
+        except KeyboardInterrupt: 
+            read.close_comms()
+            break
