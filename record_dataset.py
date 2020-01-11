@@ -2,10 +2,17 @@
 
 from random import randint
 from random import seed
+from read_serial import read_serial
 import os
+
+PORT = 'COM6'
+BAUDRATE = 115200
 
 seed()
 dataset_filename = 'digits_data.p'
+
+read = read_serial(PORT,BAUDRATE)
+
 def generate_randint():
     while True:
         yield randint(0,9)
@@ -34,26 +41,34 @@ def write_dataset(dataset):
 num_samples = 5
 
 #function to record data to create dataset
-def record_training_data():
+def record_data():
     '''
     tell user to write down digit
     record raw values
     perform feature extraction
     pickle the data
     '''
+
+    read.init_comms()
+
     digits_data = read_dataset()
     
     samples = digits_data['samples']
     labels = digits_data['labels']
     
     random_integer = generate_randint()
-    
-    for i in range(num_samples):
-        integer = next(random_integer)
-        print('Write {}'.format(integer))
-        
-        samples.append(input('Press any key'))
-        labels.append(integer)
+    try:
+        for i in range(num_samples):
+            integer = next(random_integer)
+            print('Write {}'.format(integer))
+            
+            samples.append(read.read_data())
+            labels.append(integer)
+    except KeyboardInterrupt:
+        print('Keyboard Interrupt')
+    finally:
+        read.close_comms()
+
         
     digits_data['labels'] = labels
     digits_data['samples'] = samples
@@ -61,3 +76,5 @@ def record_training_data():
     print(digits_data)
     input('Press enter to approve of appending to training dataset')
     write_dataset(digits_data)
+
+record_data()
