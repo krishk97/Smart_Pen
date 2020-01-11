@@ -5,6 +5,7 @@ from random import seed
 from read_serial import read_serial
 import pickle
 import os
+import numpy as np
 
 PORT = 'COM6'
 BAUDRATE = 115200
