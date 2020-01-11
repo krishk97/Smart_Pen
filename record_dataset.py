@@ -73,11 +73,12 @@ def record_data():
     read.close_comms()
 
         
-    digits_data['labels'] = labels
-    digits_data['samples'] = samples
+    digits_data['labels'] = np.array(labels)
+    digits_data['samples'] = np.array(samples)
     
     print(digits_data)
-    input('Press enter to approve of appending to training dataset')
+    input('Press enter to approve of appending to dataset')
     write_dataset(digits_data)
 
-record_data()
+if __name__ == '__main__':
+    record_data()
