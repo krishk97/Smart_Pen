@@ -10,7 +10,7 @@ import numpy as np
 PORT = 'COM6'
 BAUDRATE = 115200
 
-seed()
+seed(123)
 dataset_filename = 'digits_data.p'
 
 read = read_serial(PORT,BAUDRATE)
