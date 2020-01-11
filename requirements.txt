@@ -81,6 +81,7 @@ prometheus_client=0.7.1=py_0
 prompt_toolkit=2.0.10=py_0
 protobuf=3.11.2=py36h33f27b4_0
 py-opencv=3.4.2=py36hc319ecb_0
+pybluez=0.23=pypi_0
 pygments=2.5.2=py_0
 pyparsing=2.4.6=py_0
 pyqt=5.9.2=py36h6538335_2
