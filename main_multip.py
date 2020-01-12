@@ -60,7 +60,7 @@ read = read_serial(PORT,BAUDRATE)
 
 
 def read_data(stream_queue):
-    letter_gen = fake_data_letter()
+    #letter_gen = fake_data_letter()
     while True:
         letter = read.read_data()
         #letter = next(letter_gen)

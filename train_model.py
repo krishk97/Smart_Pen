@@ -22,6 +22,10 @@ import pickle
 name = 'model_digits_1'     # CHANGE NAME OF MODEL HERE
 batch_size = 32             # CHANGE BATCH SIZE HERE
 mode = 0                    # 0 - no conv layer, 1 - conv layer
+input_size = (30,6,1)       #size of input tensor 
+                            #(30,6,1) is temporal raw data
+                            #(10,6,1) is feature extraction abt
+                            
 num_classes = 10            # number of classes
 all_datasets_to_train_on = 'all_datasets.p'
 
@@ -53,7 +57,7 @@ def createModel():                                                            # 
 def createModelwConvolution():                                                            # Create model function
     model = Sequential()  
     
-    model.add(Conv2D(32, (3, 3), input_shape=(10, 6, 1)))
+    model.add(Conv2D(32, (3, 3), input_shape=input_size))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     
@@ -89,7 +93,7 @@ file.close()
 
 n_samples = data.shape[0]
 
-features = np.empty(shape = (n_samples,10,6))
+features = np.empty(shape = (n_samples,input_size[0],input_size[1]))
 
 for i,sample in enumerate(data):
     #print('sample.shape: {}'.format(sample.shape))

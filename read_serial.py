@@ -44,8 +44,7 @@ class read_serial:
                     data.append(ast.literal_eval(line))
                 except SyntaxError:
                     pass
-    
-                                    
+   
     def print_data(self,data):
             print('Sample Received: \n')
             data = np.asarray(data)
