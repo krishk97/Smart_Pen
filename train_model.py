@@ -23,7 +23,7 @@ name = 'model_digits_1'     # CHANGE NAME OF MODEL HERE
 batch_size = 32             # CHANGE BATCH SIZE HERE
 mode = 1                    # 0 - no conv layer, 1 - conv layer
 num_classes = 10            # number of classes
-
+all_datasets_to_train_on = 'all_datasets.p'
 
 #print(tf.__version__)
 
@@ -41,7 +41,7 @@ def createModel():                                                            # 
     model.add(Flatten())
     model.add(Dense(batch_size))                       # 1 NN layer, FIRST LAYER must equal to batch size      
     model.add(Activation('relu'))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.2))
     model.add(Dense(num_classes))                                # 1 NN layer, LAST LAYER must equal to number of classes
     model.add(Activation('softmax'))
 
@@ -60,7 +60,7 @@ def createModelwConvolution():                                                  
     model.add(Flatten())
     model.add(Dense(batch_size))                       # 1 NN layer, FIRST LAYER must equal to batch size      
     model.add(Activation('relu'))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.2))
     model.add(Dense(num_classes))                                # 1 NN layer, LAST LAYER must equal to number of classes
     model.add(Activation('softmax'))
 
@@ -78,10 +78,10 @@ else:
 
 
 #####################################
-#### Train model (from jrobchin) ####
+#### Train model ####
 #####################################
 
-file = open('digits_data.p','rb')
+file = open(all_datasets_to_train_on,'rb')
 raw_data = pickle.load(file)                             ## load data from pickle
 data = raw_data['samples']                      ## 3-D data, with dimension (# of digits recorded, feature_table_dim_x, feature_table_dim_y)
 labels = raw_data['labels']                            ## label the digit that the feature_table describes
@@ -112,6 +112,13 @@ X_train, X_test, y_train, y_test = model_selection.train_test_split(features, bi
 model.fit(features, bin_labels, batch_size = 32, epochs = 10, verbose = 1, validation_split = 0.2)
 results = model.evaluate(x_test, y_test, batch_size=128)
 print('test loss, test acc:', results)
+
+model.fit(features, bin_labels, batch_size = 32, epochs = 50, verbose = 1, validation_split = 0.2)
+
+if mode:
+    filename_model = name + 'conv2D' + ".hdf5"
+else:
+    filename_model = name + 'dense' + '.hdf5'
 
 filename_model = name + ".hdf5"
 model.save(filename_model)
