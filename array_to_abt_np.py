@@ -10,7 +10,7 @@ def array_to_abt_np(dataframe):
     
     '''
     sensor_data = np.array(dataframe)
-    print(sensor_data.shape)
+    #print(sensor_data.shape)
     #want to see (# of samples,6)
     
     means = np.mean(sensor_data, axis=0)

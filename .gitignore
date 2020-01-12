@@ -129,4 +129,11 @@ dmypy.json
 .pyre/
 
 # pickles
-.p
+digits_data.p
+
+#nn models
+.hdf5
+digits_data.p
+*.ipynb
+*.p
+*.hdf5
