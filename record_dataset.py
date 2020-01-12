@@ -89,15 +89,10 @@ def record_data(read_serial):
             read_serial.close_comms()
             break
 
-# example code:
-def main():
-    pass
-
 if __name__ == '__main__':
-    main()
     PORT = 'COM6'
     BAUDRATE = 115200
-    NUM_SAMPLES = 5
+    NUM_SAMPLES = 100
     seed(123)
     dataset_filename = 'digits_data.p'
 

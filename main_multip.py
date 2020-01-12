@@ -12,20 +12,21 @@ While comms active:
         6) Close comms
         break
 '''
-import numpy as np
-import cv2
 import pickle
-import pandas as pd
-from scipy import stats, fft, fftpack
-from record_dataset import record_data               
-from matplotlib import pyplot as plt
-import tensorflow as tf
-from multiprocessing import SimpleQueue, Process
-from keras.models import Sequential, load_model, model_from_json
-from array_to_abt_np import array_to_abt_np
 import time
-from read_serial import read_serial
+from multiprocessing import Process, SimpleQueue
 
+import cv2
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+from keras.models import Sequential, load_model, model_from_json
+from matplotlib import pyplot as plt
+from scipy import fft, fftpack, stats
+
+from array_to_abt_np import array_to_abt_np
+from read_serial import read_serial
+from record_dataset import record_data
 
 # 0) Load network model
 classes = {
@@ -49,14 +50,24 @@ np.resize(model, 10)
 PORT = 'COM6'
 BAUDRATE = 115200
 
-read = read_serial(PORT,BAUDRATE)
+#read = read_serial(PORT,BAUDRATE)
 
 
 def read_data(stream_queue):
+    letter_gen = fake_data_letter()
     while True:
-        letter = read.read_data()
+        #letter = read.read_data()
+        letter = next(letter_gen)
+        #print(letter.shape)
+
         abt = array_to_abt_np(letter)
-        stream_queue.put(abt)
+        #print(abt.shape)
+        #need to make the input conv2d a 4d array
+        #if inputted into dense NN, then no need to
+        sample = np.expand_dims(abt, axis = 0)
+        #sample = np.expand_dims(abt,axis=-1)
+        print(sample.shape)
+        stream_queue.put(sample)
         time.sleep(0.01)
 
 def feed_into_nn(stream_queue):
@@ -69,7 +80,14 @@ def feed_into_nn(stream_queue):
             prediction = model.predict(input_array)
             predi = prediction[0].argmax()             # get index of greatest confidence
             digit = classes[predi]  # identify digit
+            print('predicted digit: {}'.format(digit))
+
             #display_digits(digit)
+def fake_data_letter():
+    while True:
+        time.sleep(np.random.random(1)*3)
+        fake_samples = np.random.random(size = (300,6))*255
+        yield fake_samples
 
 def display_digits(digit):
     x = 600
@@ -97,13 +115,13 @@ def display_digits(digit):
 def main():
     # 1) Setup bluetooth comms
 
-    read.init_comms()
+    #read.init_comms()
 
     #create queue of streaming data
     stream_queue = SimpleQueue()
 
-    p_read = Process(target=read_data, args=stream_queue)
-    p_predict = Process(target=feed_into_nn, args = stream_queue)
+    p_read = Process(target=read_data, args=(stream_queue,))
+    p_predict = Process(target=feed_into_nn, args = (stream_queue,))
 
     try:
         p_read.start()
@@ -112,7 +130,7 @@ def main():
         p_read.join()
         p_predict.join()
         cv2.destroyAllWindows()
-        read.close_comms()
+        #read.close_comms()
 
-
-        
+if __name__ == "__main__":
+    main()
