@@ -15,6 +15,16 @@ def array_to_abt_np(dataframe):
     #want to see (# of samples,6)
     
     means = np.mean(sensor_data, axis=0)
+    
+    # print(sensor_data[:,0].shape)
+    
+    corrs = [np.sum(np.diag(np.corrcoef(sensor_data[:,0], sensor_data[:,1]))), 
+        np.sum(np.diag(np.corrcoef(sensor_data[:,0], sensor_data[:,2]))),
+        np.sum(np.diag(np.corrcoef(sensor_data[:,1], sensor_data[:,2]))),
+        np.sum(np.diag(np.corrcoef(sensor_data[:,3], sensor_data[:,4]))),
+        np.sum(np.diag(np.corrcoef(sensor_data[:,3], sensor_data[:,5]))),
+        np.sum(np.diag(np.corrcoef(sensor_data[:,4], sensor_data[:,5])))]
+
     ranges = np.ptp(sensor_data, axis = 0)
     stds = np.std(sensor_data, axis=0)
     moment_3 = stats.moment(sensor_data, moment=3, axis=0)
@@ -22,18 +32,23 @@ def array_to_abt_np(dataframe):
     dcts = fftpack.dct(sensor_data, axis=0)
     sorted_dcts = np.sort(dcts, axis=0)
     max_dcts = sorted_dcts[0]
-    second_max_dcts = sorted_dcts[1]
-    third_max_dcts = sorted_dcts[2]
+    sum_dcts = np.sum(dcts,axis=0)
+    #second_max_dcts = sorted_dcts[1]
+    #third_max_dcts = sorted_dcts[2]
 
     ffts = fft(sensor_data, axis=0)
     sorted_ffts = np.sort(ffts,axis=0)
     max_ffts = sorted_ffts[0]
-    second_max_ffts = sorted_ffts[1]
-    third_max_ffts = sorted_ffts[2]
+    sum_ffts = np.sum(ffts,axis=0)
+    #second_max_ffts = sorted_ffts[1]
+    #third_max_ffts = sorted_ffts[2]
     
-    to_be_stacked = (means, ranges, stds, moment_3, max_dcts,
-                    second_max_dcts, third_max_dcts,
-                    max_ffts, second_max_ffts, third_max_ffts)
+    #to_be_stacked = (means, ranges, stds, corrs, moment_3, max_dcts,
+                    #second_max_dcts, third_max_dcts,
+                    #max_ffts, second_max_ffts, third_max_ffts, )
+    
+    to_be_stacked = (means, ranges, stds, corrs, moment_3, max_dcts,
+                    sum_dcts, max_ffts, sum_ffts) 
     
     abt_table = np.vstack(to_be_stacked)
     

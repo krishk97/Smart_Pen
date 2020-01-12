@@ -6,8 +6,10 @@ from read_serial import read_serial
 import pickle
 import os
 import numpy as np
+import cv2
 
 MIN_SIZE = 10
+MAX_SIZE = 50
 
 def generate_randint():
     while True:
@@ -53,18 +55,19 @@ def record_training_data(dataset_filename,read_serial,num_samples):
     
     counter = 0 
     while counter < num_samples: 
+        print("You have completed {} numbers".format(counter))
         try: 
             integer = next(random_integer)
             print('Write {}'.format(integer))
             data = read_serial.read_data()
             
-            if len(data) < MIN_SIZE:  
+            if len(data) < MIN_SIZE or len(data) > MAX_SIZE:  
                 read_serial.print_data(data)           
-                print('Not enough data, please try again...')
+                print('Recording error, please try again...')
             else:     
                 read_serial.print_data(data)
-                samples.append(data)
-                labels.append(integer)
+                samples = np.append(samples,data)
+                labels = np.append(labels, integer)
                 counter = counter+1
     
         except KeyboardInterrupt:
@@ -83,31 +86,31 @@ def record_training_data(dataset_filename,read_serial,num_samples):
     input('Press enter to approve of appending to dataset')
     write_dataset(dataset_filename, digits_data)
 
-def record_data(read_serial): 
+def record_data(read): 
     '''
     records data and spits out np.array
     '''
     # initialize communication
-    read_serial.init_comms()
+    #read_serial.init_comms()
 
     while True: # need to update with serial check
         try:            
-            data = read_serial.read_data()
-            if len(data) < MIN_SIZE: 
-                read_serial.print_data(data)
-                print('Not enough data, please try again...') 
+            data = read.read_data()
+            if len(data) < MIN_SIZE or len(data) > MAX_SIZE: 
+                read.print_data(data)
+                print('Recording error, please try again...') 
             else: 
-                read_serial.print_data(data)
+                read.print_data(data)
                 print('Data successfully collected...')
                 return data
 
         except KeyboardInterrupt:
             print('Keyboard Interrupt')
-            read_serial.close_comms()
+            cv2.destroyAllWindows()
+            read.close_comms()
             break
 
 if __name__ == '__main__':
-    #main()
     PORT = 'COM12'
     BAUDRATE = 115200
     seed(datetime.now())
