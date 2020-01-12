@@ -1,5 +1,5 @@
 #output random digit between 0-9
-
+from datetime import datetime
 from random import randint
 from random import seed
 from read_serial import read_serial
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     PORT = 'COM6'
     BAUDRATE = 115200
     NUM_SAMPLES = 100
-    seed(123)
+    seed(datetime.now())
     dataset_filename = 'digits_data.p'
 
     read = read_serial(PORT,BAUDRATE)
