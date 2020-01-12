@@ -107,11 +107,10 @@ def record_data(read_serial):
             break
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-    main()
+    #main()
     PORT = 'COM12'
     BAUDRATE = 115200
-    seed(123)
+    seed(datetime.now())
     NUM_SAMPLES = None    
     while type(NUM_SAMPLES) is not int:
         try:
@@ -120,13 +119,6 @@ if __name__ == '__main__':
             print("You entered: %d" % NUM_SAMPLES)
         except ValueError:
             print("%s is not an integer.\n" % NUM_SAMPLES)
-=======
-    PORT = 'COM6'
-    BAUDRATE = 115200
-    NUM_SAMPLES = 100
-    seed(datetime.now())
-    dataset_filename = 'digits_data.p'
->>>>>>> 57b0ecf5ab6f911e017c340879b442437a16764c
 
     dataset_filename = str(input('dataset filename: ')) + '.p'
     
