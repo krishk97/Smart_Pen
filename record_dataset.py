@@ -7,19 +7,11 @@ import pickle
 import os
 import numpy as np
 
-PORT = 'COM6'
-BAUDRATE = 115200
-
-seed(123)
-dataset_filename = 'digits_data.p'
-
-read = read_serial(PORT,BAUDRATE)
-
 def generate_randint():
     while True:
         yield randint(0,9)
 
-def read_dataset():
+def read_dataset(dataset_filename):
     
     if not os.path.isfile(dataset_filename):
         print('{} not found'.format(dataset_filename))
@@ -35,15 +27,12 @@ def read_dataset():
             
     return digits_data
 
-def write_dataset(dataset):
+def write_dataset(dataset_filename, dataset):
     with open(dataset_filename,'wb') as f:
         pickle.dump(dataset, f)
 
-
-num_samples = 5
-
-#function to record data to create dataset
-def record_data():
+# function to record data to create training dataset
+def record_training_data(dataset_filename,read_serial,num_samples):
     '''
     tell user to write down digit
     record raw values
@@ -51,27 +40,28 @@ def record_data():
     pickle the data
     '''
     # initialize communication
-    read.init_comms()
+    read_serial.init_comms()
 
-    digits_data = read_dataset()
+    digits_data = read_dataset(dataset_filename)
     
     samples = digits_data['samples']
     labels = digits_data['labels']
     
     random_integer = generate_randint()
+
     for _ in range(num_samples):
         try:
             integer = next(random_integer)
             print('Write {}'.format(integer))            
-            samples.append(read.read_data())
+            samples.append(read_serial.read_data())
             labels.append(integer)
         except KeyboardInterrupt:
             print('Keyboard Interrupt')
-            read.close_comms()
+            read_serial.close_comms()
             break
 
     # done reading, close comms
-    read.close_comms()
+    read_serial.close_comms()
 
         
     digits_data['labels'] = np.array(labels)
@@ -79,7 +69,37 @@ def record_data():
     
     print(digits_data)
     input('Press enter to approve of appending to dataset')
-    write_dataset(digits_data)
+    write_dataset(dataset_filename, digits_data)
+
+def record_data(read_serial): 
+    '''
+    records data and spits out np.array
+    '''
+    # initialize communication
+    read_serial.init_comms()
+
+    while True: # need to update with serial check
+        try:            
+            data = read_serial.read_data()
+            print('Data successfully collected')
+            return data
+
+        except KeyboardInterrupt:
+            print('Keyboard Interrupt')
+            read_serial.close_comms()
+            break
+
+# example code:
+def main():
+    pass
 
 if __name__ == '__main__':
-    record_data()
+    main()
+    PORT = 'COM6'
+    BAUDRATE = 115200
+    NUM_SAMPLES = 5
+    seed(123)
+    dataset_filename = 'digits_data.p'
+
+    read = read_serial(PORT,BAUDRATE)
+    record_training_data(dataset_filename,read,NUM_SAMPLES)
