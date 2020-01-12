@@ -108,9 +108,9 @@ print('bin_labels size: {}'.format(bin_labels.shape))
 model.fit(features, bin_labels, batch_size = 32, epochs = 10, verbose = 1, validation_split = 0.2)
 
 if mode:
-    filename_model = name+ 'conv2D' + ".hdf5"
+    filename_model = name + 'conv2D' + ".hdf5"
 else:
-    filename_model = name + '.hdf5'
+    filename_model = name 'dense' + '.hdf5'
 
 model.save(filename_model)
 

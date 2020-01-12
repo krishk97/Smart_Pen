@@ -41,8 +41,14 @@ classes = {
     8: '8',
     9: '9'
 }
-
+mode = 0 #0 for dense NN, 1 for conv2d 
 name = 'model_digits_1'                                 # CHANGE NAME OF MODEL HERE
+
+if mode:
+    name = name + 'conv2d'
+else:
+    name = name + 'dense'
+
 filename = name + ".hdf5"
 model = load_model(filename, compile=False)
 np.resize(model, 10)
@@ -50,22 +56,24 @@ np.resize(model, 10)
 PORT = 'COM6'
 BAUDRATE = 115200
 
-#read = read_serial(PORT,BAUDRATE)
+read = read_serial(PORT,BAUDRATE)
 
 
 def read_data(stream_queue):
     letter_gen = fake_data_letter()
     while True:
-        #letter = read.read_data()
-        letter = next(letter_gen)
+        letter = read.read_data()
+        #letter = next(letter_gen)
         #print(letter.shape)
 
         abt = array_to_abt_np(letter)
         #print(abt.shape)
-        #need to make the input conv2d a 4d array
-        #if inputted into dense NN, then no need to
+        #need to make the input conv2d a 4d array (1, 10, 6, 1)
+        #if inputted into dense NN, input (1, 10, 6)
+        if mode:
+            abt = np.expand_dims(abt, axis=-1)
+
         sample = np.expand_dims(abt, axis = 0)
-        #sample = np.expand_dims(abt,axis=-1)
         print(sample.shape)
         stream_queue.put(sample)
         time.sleep(0.01)
@@ -115,7 +123,7 @@ def display_digits(digit):
 def main():
     # 1) Setup bluetooth comms
 
-    #read.init_comms()
+    read.init_comms()
 
     #create queue of streaming data
     stream_queue = SimpleQueue()
@@ -130,7 +138,7 @@ def main():
         p_read.join()
         p_predict.join()
         cv2.destroyAllWindows()
-        #read.close_comms()
+        read.close_comms()
 
 if __name__ == "__main__":
     main()
