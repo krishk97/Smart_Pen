@@ -7,7 +7,7 @@ import serial
 import ast
 import signal
 import atexit
-
+from array_to_abt_np import smooth_data
 '''
 Class that handles comms with smart pen
 '''
@@ -16,6 +16,7 @@ class read_serial:
             self.port_name = port_name
             self.baudrate = baudrate
             print('Connected to port...')
+            self.init_comms()
             
     def init_comms(self): 
         self.ser = serial.Serial(self.port_name)
@@ -62,17 +63,17 @@ def main():
 if __name__ == '__main__':
     main()			
     
-    PORT = 'COM6'
+    PORT = 'COM10'
     BAUDRATE = 115200
-    
+
     read = read_serial(PORT,BAUDRATE) # set up serial communication with pen 
-    read.init_comms() # initialize comms
+    # read.init_comms() # initialize comms
 
     # begin collecting data until KeyboardInterrupt
     while True: 
         try: 
             data = read.read_data()
-            print('recorded data: \n', data)
+            print('smoothed data: \n', smooth_data(data))
         except KeyboardInterrupt: 
             read.close_comms()
             break

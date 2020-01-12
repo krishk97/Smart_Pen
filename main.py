@@ -29,27 +29,38 @@ from keras.models import Sequential, load_model, model_from_json
 classes = {
     0: '0',
     1: '1',
-    2: '2',
-    3: '3',
-    4: '4',
-    5: '5',
-    6: '6',
-    7: '7',
-    8: '8',
-    9: '9'
+    2: '2'#,
+    #3: '3',
+    #4: '4',
+    #5: '5',
+    #6: '6',
+    #7: '7',
+    #8: '8',
+    #9: '9'
 }
 
-name = 'model_digits_1'                                 # CHANGE NAME OF MODEL HERE
+
+NUM_CLASSES = len(classes)
+
+name = 'model_digits_0_to_2'                                 # CHANGE NAME OF MODEL HERE
 filename = name + ".hdf5"
 model = load_model(filename, compile=False)
-np.resize(model, 10)
+np.resize(model, NUM_CLASSES)
 
 # 1) Setup bluetooth comms
-PORT = 'COM6'
+PORT = 'COM10'
 BAUDRATE = 115200
 
 read = read_serial(PORT,BAUDRATE)
-read.init_comms()
+#read.init_comms()
+
+i = 0
+j = 0
+
+     
+x = 600
+y = 520
+img = np.zeros((x, y, 3),np.uint8)+255
 
 while(True): # need serial comm activity boolean
 
@@ -62,7 +73,9 @@ while(True): # need serial comm activity boolean
         ############################
         #   3) Pre-process data    # 
         ############################
-        input_array =   array_to_abt_np(data)    
+        input_array_orig = array_to_abt_np(data) 
+        input_array = np.expand_dims(input_array_orig, axis=3)
+        input_array = np.expand_dims(input_array, axis=0)
         
         
         ############################################
@@ -73,11 +86,14 @@ while(True): # need serial comm activity boolean
         predi = prediction[0].argmax()             # get index of greatest confidence
         digit = classes[predi]                     # identify digit
             
+        print("PredictionL ", digit)
+
         ###############################################
         # 4.2) Display prediction confidence results  #
         ###############################################
         
-        disp_x = 800
+        '''
+        disp_x = 1000
         disp_y = 800
         data_display = np.zeros((disp_x, disp_y, 3), np.uint8)       
         positions = {                                            
@@ -86,48 +102,44 @@ while(True): # need serial comm activity boolean
             'null_pos': (200, 200) # used as null point for mouse control
         }
         
-        for i, pred in enumerate(prediction[0]):
+        for k, pred in enumerate(prediction[0]):
             # Draw confidence bar for each digit
-            barx = positions['hand_pose'][0]
-            bary = 60 + i*60
+            barx = positions['digit'][0]
+            bary = 60 + k*60
             bar_height = 20
             bar_length = int(400 * pred) + barx # calculate length of confidence bar
 
             # Make the most confidence prediction green
-            if i == predi:
+            if k == predi:
                 colour = (0, 255, 0)
             else:
                 colour = (0, 0, 255)
 
-            cv2.putText(data_display, "{}: {}".format(classes[i], pred), (positions['digit'][0], 30 + i*60), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2)
+            cv2.putText(data_display, "{}: {}".format(classes[k], pred), (positions['digit'][0], 30 + k*60), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2)
             cv2.rectangle(data_display, (barx, bary), (bar_length, bary - bar_height), colour, -1, 1)
             cv2.putText(data_display, "digit: {}".format(digit), positions['digit'], cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 2)
             
             cv2.imshow('data', data_display)
-        
+        '''
         
         #######################
         # 5) Display digits   #
         #######################
-        
-        x = 600
-        y = 520
-        img = np.zeros((x, y, 3),np.uint8)+255
 
-        i = 0
-        j = 0
 
-        cv2.imshow('Notes',img)
-
-        # key = cv2.waitKey(0)
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        # cv2.putText(img,chr(k),(80+i,100+j), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 1, cv2.LINE_AA)
-        cv2.putText(img,chr(digit),(80+i,100+j), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 1, cv2.LINE_AA)  
+        cv2.putText(img,digit,(80+i,100+j), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 1, cv2.LINE_AA)  
         i += 20
         if i >= 360:
             j += 30
             i = 0
-            
+        if j > 420:
+            i = 0
+            j = 0
+            img = np.zeros((x, y, 3),np.uint8)+255
+        cv2.imshow('Notes',img)
+        key = cv2.waitKey(1)
+
+        
     except KeyboardInterrupt: 
         print('Exiting!')
         cv2.destroyAllWindows()
