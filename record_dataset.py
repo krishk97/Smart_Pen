@@ -7,6 +7,8 @@ import pickle
 import os
 import numpy as np
 
+MIN_SIZE = 10
+
 def generate_randint():
     while True:
         yield randint(0,9)
@@ -48,13 +50,23 @@ def record_training_data(dataset_filename,read_serial,num_samples):
     labels = digits_data['labels']
     
     random_integer = generate_randint()
-
-    for _ in range(num_samples):
-        try:
+    
+    counter = 0 
+    while counter < num_samples: 
+        try: 
             integer = next(random_integer)
-            print('Write {}'.format(integer))            
-            samples.append(read_serial.read_data())
-            labels.append(integer)
+            print('Write {}'.format(integer))
+            data = read_serial.read_data()
+            
+            if len(data) < MIN_SIZE:  
+                read_serial.print_data(data)           
+                print('Not enough data, please try again...')
+            else:     
+                read_serial.print_data(data)
+                samples.append(data)
+                labels.append(integer)
+                counter = counter+1
+    
         except KeyboardInterrupt:
             print('Keyboard Interrupt')
             read_serial.close_comms()
@@ -81,8 +93,13 @@ def record_data(read_serial):
     while True: # need to update with serial check
         try:            
             data = read_serial.read_data()
-            print('Data successfully collected')
-            return data
+            if len(data) < MIN_SIZE: 
+                read_serial.print_data(data)
+                print('Not enough data, please try again...') 
+            else: 
+                read_serial.print_data(data)
+                print('Data successfully collected...')
+                return data
 
         except KeyboardInterrupt:
             print('Keyboard Interrupt')
@@ -95,11 +112,20 @@ def main():
 
 if __name__ == '__main__':
     main()
-    PORT = 'COM6'
+    PORT = 'COM12'
     BAUDRATE = 115200
-    NUM_SAMPLES = 5
     seed(123)
-    dataset_filename = 'digits_data.p'
+    NUM_SAMPLES = None    
+    while type(NUM_SAMPLES) is not int:
+        try:
+            NUM_SAMPLES = input('Enter number of samples to test on: ')
+            NUM_SAMPLES = int(NUM_SAMPLES)
+            print("You entered: %d" % NUM_SAMPLES)
+        except ValueError:
+            print("%s is not an integer.\n" % NUM_SAMPLES)
 
+    dataset_filename = str(input('dataset filename: ')) + '.p'
+    
     read = read_serial(PORT,BAUDRATE)
+
     record_training_data(dataset_filename,read,NUM_SAMPLES)
