@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from scipy import stats, fft, fftpack
 
+ARRAY_LENGTH = 30
+
 def array_to_abt_np(dataframe):
     '''
     
@@ -36,3 +38,19 @@ def array_to_abt_np(dataframe):
     abt_table = np.vstack(to_be_stacked)
     
     return abt_table
+
+def array_to_wang2012(dataframe): 
+    sensor_data = np.array(dataframe)
+    # smooth/interpolate
+
+    # mean,std,var,iqr,corr,mad,rms,energy
+    means = np.mean(sensor_data, axis=0)
+    stds = np.std(sensor_data, axis=0)
+    iqrs = np.percentile(sensor_data,75,axis=0) - np.percentile(sensor_data,25,axis=0)
+    
+def smooth_data(dataframe): 
+    sensor_data = np.array(dataframe)
+    return np.resize(sensor_data,(ARRAY_LENGTH,6))
+    
+
+

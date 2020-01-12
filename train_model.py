@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-
+import sklearn.model_selection as model_selection
 import tensorflow as tf
 from keras import layers
 from keras import backend as K
@@ -103,15 +103,19 @@ for i,sample in enumerate(data):
     features[i] = array_to_abt_np(sample)
 
 features = normalize(features,axis=0)
-
-
 bin_labels = to_categorical(labels)
 
 if mode == 1:
     features = np.expand_dims(features, axis=3)
-
+    
 print('features size: {}'.format(features.shape))
 print('bin_labels size: {}'.format(bin_labels.shape))
+
+X_train, X_test, y_train, y_test = model_selection.train_test_split(features, bin_labels, train_size=0.75,test_size=0.25, random_state=101)
+
+model.fit(features, bin_labels, batch_size = 32, epochs = 10, verbose = 1, validation_split = 0.2)
+results = model.evaluate(x_test, y_test, batch_size=128)
+print('test loss, test acc:', results)
 
 model.fit(features, bin_labels, batch_size = 32, epochs = 50, verbose = 1, validation_split = 0.2)
 
@@ -120,6 +124,7 @@ if mode:
 else:
     filename_model = name + 'dense' + '.hdf5'
 
+filename_model = name + ".hdf5"
 model.save(filename_model)
 
 
