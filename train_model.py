@@ -18,13 +18,13 @@ import pickle
 ##### USER DEFINED INPUTS #########
 ###################################
 
-name = 'model_digits_1'     # CHANGE NAME OF MODEL HERE
+name = 'model_digits_0_to_3_smooth'     # CHANGE NAME OF MODEL HERE
 batch_size = 32             # CHANGE BATCH SIZE HERE
-DROPOUT_RATE = 0.2          # dropout rate
+DROPOUT_RATE = 0.1        # dropout rate
 mode = 1                    # 0 - no conv layer, 1 - conv layer, 2 - conv conv layer
-num_classes = 10            # number of classes
+num_classes = 4           # number of classes
 all_datasets_to_train_on = 'all_datasets.p'
-FEATURE_NUMS = 9
+FEATURE_NUMS = 30
 input_size = (FEATURE_NUMS,6,1)
 
 #print(tf.__version__)
@@ -126,9 +126,9 @@ features = np.empty(shape = (n_samples,input_size[0],input_size[1]))
 
 for i,sample in enumerate(reduced_data):
     if input_size==(9,6,1):
-        sample = array_to_abt_np(sample)
+        features[i] = array_to_abt_np(sample)
     elif input_size==(30,6,1):
-        sample = smooth_data(sample)
+        features[i] = smooth_data(sample)
 
 features = normalize(features,axis=0)
 bin_labels = to_categorical(reduced_labels)
@@ -143,14 +143,15 @@ X_train, X_test, y_train, y_test = model_selection.train_test_split(features, bi
 model.fit(X_train, y_train, batch_size = 32, epochs = 200, verbose = 1, validation_split = 0.25)
 
 if mode:
-    filename_model = name + 'conv2D' + ".hdf5"
+    filename_model = name + '_conv2D' + ".hdf5"
 else:
-    filename_model = name + 'dense' + '.hdf5'
+    filename_model = name + '_dense' + '.hdf5'
 
 results = model.evaluate(X_test, y_test, batch_size=128)
 print('test loss, test acc:', results)
 
 filename_model = name + ".hdf5"
+print('saved model to {}'.format(filename_model))
 model.save(filename_model)
 
 
