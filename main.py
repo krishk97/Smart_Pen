@@ -1,18 +1,28 @@
+## MAIN.PY -- VERSION 1, no threading
+''' Script outline: 
+0) Load network model 
+1) Setup bluetooth comms
+While comms active: 
+    try: 
+        2) Read serial data
+        3) Pre-process data
+        4) feed data into network
+        5) display data in GUI 
+    except KeyboardInterrupt: 
+        6) Close comms
+        break
+'''
 import numpy as np
 import cv2
 import pickle
 import pandas as pd
 from scipy import stats, fft, fftpack
-from read_serial import read_serial
+from read_dataset import record_data               
 from matplotlib import pyplot as plt
-
 import tensorflow as tf
 from tensorflow.keras.models import Sequential, load_model, model_from_json
 
-PORT = 'COM6'
-BAUDRATE = 115200
-
-
+# 0) Load network model
 classes = {
     0: '0',
     1: '1',
@@ -26,27 +36,32 @@ classes = {
     9: '9'
 }
 
-
 name = 'model_digits_1'                                 # CHANGE NAME OF MODEL HERE
 filename = name + ".hdf5"
 model = load_model(filename, compile=False)
 np.resize(model, 10)
 
+# 1) Setup bluetooth comms
+PORT = 'COM6'
+BAUDRATE = 115200
+
 read = read_serial(PORT,BAUDRATE)
+read.init_comms()
 
-
-while(True):
+while(True): # need serial comm activity boolean
     
     ############################
-    ## Read real-time writing ##
+    #   2) Read serial data    # 
     ############################
-    
-    
-    # Here, we want to 1) Read from Bluetooth serial, 2) pd-to-abt-np. 
-    # Input_array should be array of features        
-    # 1) Setup read from bluetooth 
-    read.init_comms()
-    read.read_data()
+    read.record_data()
+
+
+
+
+
+    ############################
+    #   3) Pre-process data    # 
+    ############################
     input_array =   ########################################## ENTER YOUR INPUT HERE ##################################
     
     
