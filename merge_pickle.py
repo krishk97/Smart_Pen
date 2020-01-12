@@ -7,12 +7,18 @@ import os
 import numpy as np
 from record_dataset import read_dataset, write_dataset
 
+desired_pickle_jar = 'pickle_jar'
 ultimate_dataset_name = 'all_datasets.p'
 
 def main():
+    pickles_to_combine = []
+    for file in os.listdir(desired_pickle_jar):
+        if file.endswith('.p'):
+            pickles_to_combine.append(os.path.join(desired_pickle_jar,file))
+
     datasets = {'samples':np.array([]),'labels':np.array([])}
 
-    for dataset in sys.argv[1:]:
+    for dataset in pickles_to_combine:
 
         if not os.path.isfile(dataset):
             raise FileNotFoundError('{} not found'.format(dataset))
