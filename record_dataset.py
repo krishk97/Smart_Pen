@@ -1,5 +1,5 @@
 #output random digit between 0-9
-
+from datetime import datetime
 from random import randint
 from random import seed
 from read_serial import read_serial
@@ -106,11 +106,8 @@ def record_data(read_serial):
             read_serial.close_comms()
             break
 
-# example code:
-def main():
-    pass
-
 if __name__ == '__main__':
+<<<<<<< HEAD
     main()
     PORT = 'COM12'
     BAUDRATE = 115200
@@ -123,6 +120,13 @@ if __name__ == '__main__':
             print("You entered: %d" % NUM_SAMPLES)
         except ValueError:
             print("%s is not an integer.\n" % NUM_SAMPLES)
+=======
+    PORT = 'COM6'
+    BAUDRATE = 115200
+    NUM_SAMPLES = 100
+    seed(datetime.now())
+    dataset_filename = 'digits_data.p'
+>>>>>>> 57b0ecf5ab6f911e017c340879b442437a16764c
 
     dataset_filename = str(input('dataset filename: ')) + '.p'
     

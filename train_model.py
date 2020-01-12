@@ -21,7 +21,7 @@ import pickle
 
 name = 'model_digits_1'     # CHANGE NAME OF MODEL HERE
 batch_size = 32             # CHANGE BATCH SIZE HERE
-mode = 1                    # 0 - no conv layer, 1 - conv layer
+mode = 0                    # 0 - no conv layer, 1 - conv layer
 num_classes = 10            # number of classes
 
 
@@ -105,12 +105,16 @@ bin_labels = to_categorical(labels)
 
 if mode == 1:
     features = np.expand_dims(features, axis=3)
-    
+
 print('features size: {}'.format(features.shape))
 print('bin_labels size: {}'.format(bin_labels.shape))
 model.fit(features, bin_labels, batch_size = 32, epochs = 10, verbose = 1, validation_split = 0.2)
 
-filename_model = name + ".hdf5"
+if mode:
+    filename_model = name + 'conv2D' + ".hdf5"
+else:
+    filename_model = name 'dense' + '.hdf5'
+
 model.save(filename_model)
 
 

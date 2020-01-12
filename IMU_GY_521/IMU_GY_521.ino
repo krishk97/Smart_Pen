@@ -1,6 +1,6 @@
 #include<Wire.h>
 
-#define BUTTON 3
+#define BUTTON 4
 #define DEBOUNCE 15
 #define BAUD 115200
 #define DATASTREAMS 6
