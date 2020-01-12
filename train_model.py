@@ -8,7 +8,7 @@ from keras.preprocessing.image import ImageDataGenerator, load_img, img_to_array
 from keras.models import Sequential, load_model, model_from_json
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
-from keras.utils import to_categorical
+from keras.utils import to_categorical, normalize
 
 from array_to_abt_np import array_to_abt_np
 import pickle
@@ -97,6 +97,9 @@ for i,sample in enumerate(data):
     abt = array_to_abt_np(sample)
     #print('abt.shape: {}'.format(abt.shape))
     features[i] = array_to_abt_np(sample)
+
+features = normalize(features,axis=0)
+
 
 bin_labels = to_categorical(labels)
 
