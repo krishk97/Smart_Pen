@@ -15,11 +15,12 @@ class read_serial:
     def __init__(self, port_name, baudrate):
             self.port_name = port_name
             self.baudrate = baudrate
-            print('Intialized communication!')
+            print('Connected to port...')
             
     def init_comms(self): 
         self.ser = serial.Serial(self.port_name)
         self.ser.baudrate = self.baudrate
+        print('Initialized connection...')
     
     def read_data(self):
         self.receive_data = False
@@ -51,8 +52,8 @@ class read_serial:
             print(data)
                   
     def close_comms(self):
-            print('Closed Serial Port')
             self.ser.close()
+            print('Closed connection to port...')
 
 # example code:
 def main():
