@@ -44,7 +44,7 @@ def record_training_data(dataset_filename,read_serial,num_samples):
     pickle the data
     '''
     # initialize communication
-    read_serial.init_comms()
+    #read_serial.init_comms()
 
     digits_data = read_dataset(dataset_filename)
     
@@ -111,7 +111,7 @@ def record_data(read):
             break
 
 if __name__ == '__main__':
-    PORT = 'COM12'
+    PORT = 'COM10'
     BAUDRATE = 115200
     seed(datetime.now())
     NUM_SAMPLES = None    

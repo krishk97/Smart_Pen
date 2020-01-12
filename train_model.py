@@ -18,11 +18,11 @@ import pickle
 ##### USER DEFINED INPUTS #########
 ###################################
 
-name = 'model_digits_0_to_3_smooth'     # CHANGE NAME OF MODEL HERE
+name = 'model_digits_0_to_4_smooth30_version69'     # CHANGE NAME OF MODEL HERE
 batch_size = 32             # CHANGE BATCH SIZE HERE
 DROPOUT_RATE = 0.1        # dropout rate
 mode = 1                    # 0 - no conv layer, 1 - conv layer, 2 - conv conv layer
-num_classes = 4           # number of classes
+num_classes = 5           # number of classes
 all_datasets_to_train_on = 'all_datasets.p'
 FEATURE_NUMS = 30
 input_size = (FEATURE_NUMS,6,1)

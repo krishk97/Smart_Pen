@@ -19,19 +19,20 @@ import pandas as pd
 from scipy import stats, fft, fftpack
 from read_serial import read_serial
 from record_dataset import record_data   
-from array_to_abt_np import array_to_abt_np            
+from array_to_abt_np import array_to_abt_np, smooth_data            
 from matplotlib import pyplot as plt
 import tensorflow as tf
 import keras
+from keras.utils import to_categorical, normalize
 from keras.models import Sequential, load_model, model_from_json
 
 # 0) Load network model
 classes = {
     0: '0',
     1: '1',
-    2: '2'#,
-    #3: '3',
-    #4: '4',
+    2: '2',
+    3: '3',
+    4: '4'#,
     #5: '5',
     #6: '6',
     #7: '7',
@@ -39,10 +40,16 @@ classes = {
     #9: '9'
 }
 
-
 NUM_CLASSES = len(classes)
+mode=0 # mode 1 = abt, mode 0 = smooth
 
-name = 'model_digits_0_to_2'                                 # CHANGE NAME OF MODEL HERE
+if mode ==1: 
+    name = 'model_digits_0_to_3_abt' 
+elif mode ==0: 
+    #name = 'model_digits_0_to_3_smooth'
+    name = 'model_digits_0_to_4_smooth30_version69'
+                                    
+                                    # CHANGE NAME OF MODEL HERE
 filename = name + ".hdf5"
 model = load_model(filename, compile=False)
 np.resize(model, NUM_CLASSES)
@@ -73,7 +80,13 @@ while(True): # need serial comm activity boolean
         ############################
         #   3) Pre-process data    # 
         ############################
-        input_array_orig = array_to_abt_np(data) 
+    
+        if mode==1:
+            input_array_orig = array_to_abt_np(data)
+        elif mode==0:
+            input_array_orig = smooth_data(data)
+
+        input_array = normalize(input_array_orig,axis=0)
         input_array = np.expand_dims(input_array_orig, axis=3)
         input_array = np.expand_dims(input_array, axis=0)
         
