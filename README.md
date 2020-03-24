@@ -1,7 +1,7 @@
 # Penley: A Smart Pen
 
 <p align="center">
-  <img src="images/penley-intro.gif" height="200"/>
+  <img src="images/penley-intro.gif" height="250"/>
 </p>
 
 Penley is a smart-pen device that can recognize handwritten digits using pen motion. It was built in 36 hours at IDEA Hacks 2020, achieving 2nd place. 
@@ -15,8 +15,8 @@ The project was built with the highly myopic intent of rapid completion for the 
 </p>
 
 <p align="center">
-  <img src="images/penley-notes.jpg" height="200"/>
-  <img src="images/notes.png" height="200"/>
+  <img src="images/penley-notes.jpg" height="250"/>
+  <img src="images/notes.png" height="250"/>
 </p>
 
 Penley is a smart-pen device that enables the user to transribe handwritten notes into computer-transribed notes in real-time. It works soley by tracking the motion of the pen and classifying characters using a deep-learning framework.
@@ -63,14 +63,59 @@ Parts list:
 
 ### Software 
 
+The hardware-side software was written in C++ for the Arduino. The computer/app-side software was written in Python 3.6. Deep learning was enabled with TensorFlow 1.x and Keras stand-alone. 
+
+The CNN architecture used was very simple and naive -- it only utilized 1 convolutional layer, followed by a max-pooling layer, followed by a fully-connected-network with dropout. We utilized ReLU activations and an output Softmax activation. The ADAM optimizer was used. This was our first real-exposure to deep learning, and our model reflects as such. Much work is needed on the neural network architecture and data pre-processing, and serves as a very interesting research direction.  
+
 ## Getting Started
+
+TO-DO: Update 'Getting Started' with images that document the process of loading Arduino code, collecting training data, training the CNN and, finally, using the Penley. 
 
 ### Setting up 
 
+(1) Assemble the Penley hardware using schematic above. 
+
+(2) Compile and load the [IMU_GY_521.ino](arduino/IMU_GY_521/IMU_GY_521.ino) Arduino file onto the Arduino. Ensure the value of BUTTON is set to the corresponding digital pin that is connected to your physical writing push-button.  
+
+(3) Connect to your bluetooth module.  
+
+(4) Test whether your device is successfully receiving Penley motion data by running the [read_serial.py](read_serial.py) file. The file should be exited via a keyboard interrupt to ensure serial-communication is properly closed.
+
 ### Obtaining training data 
+
+(5) To collect training data, run the [record_dataset.py](record_dataset.py) file. 
+
+(6) After successfully initiating communication with the Penley, the script will prompt 2 user inputs: 
+(i) The user should enter a valid integer to specify how many samples they would like to record, 
+(ii) The user should enter a string to specify a filename in which the training data will be saved within.  
+
+(7) The script will begin to output random integers between 0-9. The user should use the Penley to write the outputted numbers. Remember to hold the push button when writing the digit, and releasing only once the digit has been completely written. The script will prompt the user if there is a recording error, in which case the displayed digit should be written again.  
+
+(8) After completion, the script will automatically exit. Otherwise, the user can end the script early via a keyboard interrupt. Currently, this will not save the recorded data. 
+
+## Training 
+
+(9) Run the [train_model.py](train_model.py) to train the model with the training dataset. The user should manually input the path location for the training dataset.  
 
 ### Testing 
 
+(10) Run the [main.py](main.py) file. After writing your first digit, a display window will appear. Hopefully, it will display the correct digit you wrote! You can keep writing digits, and the display will continue to output what it thinks you wrote. You can exit the program via a keyboard interrupt. 
+
 ## Future Work 
 
+As aforementioned, this project was created in 36 hours with the intent of showing the basic idea working. There is plenty of room for debugging and development, and it is heavily encouraged to anyone who comes across this project. Here is a big list of large-scale items that can be completed to help Penley become a viable device:  
+
+* Construct new pre-processing tools.
+* Construct new neural network architectures for higher accuracy classification
+* Implement method of reading spaces and line/page breaks. 
+* Implement reading both characters and digits
+* Implement deciphering whole words and sentences without breaks from a stream of IMU data. 
+* Construct a better UI
+
 ## Credits 
+
+Krish Kabra - @krishk97
+Aidan Cookson - @aucookson97
+Daniel Truong - @danthedolphin
+Max Gong - @maxg
+Calvin Chang - @LemonCakeXD
