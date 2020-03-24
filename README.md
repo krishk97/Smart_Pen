@@ -93,7 +93,7 @@ TO-DO: Update 'Getting Started' with images that document the process of loading
 
 (8) After completion, the script will automatically exit. Otherwise, the user can end the script early via a keyboard interrupt. Currently, this will not save the recorded data. 
 
-## Training 
+### Training 
 
 (9) Run the [train_model.py](train_model.py) to train the model with the training dataset. The user should manually input the path location for the training dataset.  
 
@@ -114,8 +114,12 @@ As aforementioned, this project was created in 36 hours with the intent of showi
 
 ## Credits 
 
-Krish Kabra - @krishk97
-Aidan Cookson - @aucookson97
-Daniel Truong - @danthedolphin
-Max Gong - @maxg
-Calvin Chang - @LemonCakeXD
+Krish Kabra - [krishk97](https://github.com/krishk97)
+
+Aidan Cookson - [aucookson97](https://github.com/aucookson97)
+
+Daniel Truong - [danthedolphin](https://github.com/danthedolphin)
+
+Max Gong - [maxg](https://github.com/maxg)
+
+Calvin Chang - [LemonCakeXD](https://github.com/LemonCakeXD)
