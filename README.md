@@ -45,7 +45,7 @@ The design of Penley is quite simple. A internal-measurement-unit (IMU) tracks t
 
 ### Hardware
 <p align="center">
-  <img src="images/penley-circuit.jpg" height="200">
+  <img src="images/penley-circuit.png" height="200">
 </p>
 
 The schematics for the hardware are given in the above diagram. Yes, we know its not a CAD schematic. We had 36 hours, and we didn't want to waste time making things look pretty. Except for the Koala bear cap. That was awesome. 
