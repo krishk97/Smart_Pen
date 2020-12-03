@@ -125,5 +125,5 @@ Max Gong - [maxg](https://github.com/maxg)
 Calvin Chang - [LemonCakeXD](https://github.com/LemonCakeXD)
 
 <p align="center">
-  <img src="images/2020_2ndPlace.jpg">
+  <img src="images/2020_2ndPlace.jpg" height="250">
 </p>
