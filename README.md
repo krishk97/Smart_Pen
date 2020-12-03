@@ -123,3 +123,7 @@ Daniel Truong - [danthedolphin](https://github.com/danthedolphin)
 Max Gong - [maxg](https://github.com/maxg)
 
 Calvin Chang - [LemonCakeXD](https://github.com/LemonCakeXD)
+
+<p align="center">
+  <img src="images/2020_2ndPlace.jpg">
+</p>
